@@ -1,5 +1,6 @@
 
 use std::collections::BTreeMap;
+use std::default::Default;
 
 enum Attr {
     Num(i32),
@@ -13,7 +14,7 @@ struct Connection {
     e: usize,
 }
 
-struct Graph {
+pub struct Graph {
     nodes: Vec<BTreeMap<String, Attr>>,
     edges: Vec<BTreeMap<String, Attr>>,
     adj: Vec<Vec<Connection>>
@@ -40,14 +41,17 @@ impl Graph {
     }
 }
 
-fn main() {
-    let mut graph = Graph::new();
+impl Default for Graph {
+    fn default() -> Self {
+        let mut graph = Graph::new();
 
-    //Nodes
-    graph.add_node(BTreeMap::from([("hej".to_owned(), Attr::Num(5))]));
-    graph.add_node(BTreeMap::from([("hejdå".to_owned(), Attr::Pos{x: 5, y:3})]));
+        //Nodes
+        graph.add_node(BTreeMap::from([("hej".to_owned(), Attr::Num(5))]));
+        graph.add_node(BTreeMap::from([("hejdå".to_owned(), Attr::Pos{x: 5, y:3})]));
 
-    //Edges
-    graph.add_edge(0, 1, BTreeMap::from([("kantinf".to_owned(), Attr::Color(2, 3, 4))]));
+        //Edges
+        graph.add_edge(0, 1, BTreeMap::from([("kantinf".to_owned(), Attr::Color(2, 3, 4))]));
+
+        graph
+    }
 }
-
