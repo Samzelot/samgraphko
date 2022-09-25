@@ -7,6 +7,8 @@ use crate::gen_graph::Graph;
 
 struct EApp {
     graph: Graph,
+    text: String,
+    clicked: bool
 }
 
 pub fn start_app(graph: Graph) {
@@ -17,7 +19,11 @@ pub fn start_app(graph: Graph) {
 
 impl EApp {
     fn new(graph: Graph) -> Self {
-        Self {graph: graph}
+        Self {
+            graph: graph,
+            text: String::from("Example text"),
+            clicked: false,
+        }
     }
 }
 
@@ -25,15 +31,16 @@ impl eframe::App for EApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("SamGraphKo");
-            
 
             ui.horizontal(|ui| {
                 ui.label("Some text: ");
-                ui.text_edit_singleline(&mut "Example".to_owned());
+                ui.text_edit_singleline(&mut self.text);
             });
             
-            
             if ui.button("Click each year").clicked() {
+                self.clicked = !self.clicked;
+            }
+            if self.clicked {
                 ui.label("You clicked me!");
             }
             
