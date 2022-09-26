@@ -10,66 +10,70 @@ enum Attr {
     Color(u8, u8, u8)
 }
 
-pub struct AttrSet {
+pub struct Attrs {
     persistent: BTreeMap<String, Attr>,
     temp: BTreeMap<String, Attr>
 }
 
-impl Default for AttrSet {
+impl<const T: usize> From<[(String, Attr); T]> for Attrs {
+    fn from(v: [(String, Attr); T]) -> Self {
+        Attrs {
+            persistent: v.into(),
+            temp: Default::default()
+        }
+    }
+}
+
+impl Default for Attrs {
     fn default() -> Self {
         Self { persistent: Default::default(), temp: Default::default() }
     }
 }
 
 pub struct Graph {
-    nodes: Vec<AttrSet>,
-    edges: HashMap<(usize, usize), AttrSet>,
+    nodes: Vec<Attrs>,
+    edges: HashMap<(usize, usize), Attrs>,
     adj: Vec<Vec<usize>>
 }
 
 impl Graph {
-    fn new() -> Self {
-        Graph {
-            nodes: Vec::new(),
-            edges: Vec::new(),
-            adj: vec![]
-        }
-    }
-
-    fn add_node(&mut self, attrs: BTreeMap<String, Attr>) {
-        self.adj.push(vec![]);
+    fn add_node(&mut self, attrs: Attrs) {
+        self.adj.push(Default::default());
         self.nodes.push(attrs);
         return
     }
 
-    fn add_edge(&mut self, from: usize, to: usize, attrs: BTreeMap<String, Attr>) {
-        let edge_ind = self.edges.len();
-        self.edges.push(attrs);
-        self.adj[from].push(Connection { n: to, e: edge_ind})
+    fn add_edge(&mut self, from: usize, to: usize, attrs: Attrs) {
+        self.adj[from].push(to);
+        self.edges.insert((from, to), attrs);
     }
 
-    fn get_node_attrs(&self, ind: usize) -> Option<&BTreeMap<String, Attr>> {
+    fn get_node_attrs(&self, ind: usize) -> Option<&Attrs> {
         return self.nodes.get(ind)
     }
 
-    fn get_connections(&self, node_ind: usize) -> Option<&Vec<Connection>> {
+    fn get_connections(&self, node_ind: usize) -> Option<&Vec<usize>> {
         return self.adj.get(node_ind)
     }
 }
 
 impl Default for Graph {
     fn default() -> Self {
-        let mut graph = Graph::new();
-
-        //Nodes
-        graph.add_node(BTreeMap::from([("hej".to_owned(), Attr::Num(5))]));
-        graph.add_node(BTreeMap::from([("hejdå".to_owned(), Attr::Pos{x: 5, y:3})]));
-
-        //Edges
-        graph.add_edge(0, 1, BTreeMap::from([("kantinf".to_owned(), Attr::Color(2, 3, 4))]));
-
-
-        graph
-
+        Self { nodes: Default::default(), edges: Default::default(), adj: Default::default() }
     }
+}
+
+fn test_graph() -> Graph {
+    let mut graph = Graph::default();
+
+    //Nodes
+    graph.add_node([("hej".to_owned(), Attr::Num(5))].into());
+    graph.add_node([("hejdå".to_owned(), Attr::Pos{x: 5, y:3})].into());
+
+    //Edges
+    graph.add_edge(0, 1, [("kantinf".to_owned(), Attr::Color(2, 3, 4))].into());
+
+
+    graph
+
 }
