@@ -37,6 +37,31 @@ pub struct Graph {
 }
 
 impl Graph {
+    pub fn example() -> Graph {
+        let mut  graph = Graph::default();
+        
+        graph.add_node([
+            ("Is".to_owned(), Attr::Str("Apartment".to_owned())),
+            ("Rooms".to_owned(), Attr::Num(6))
+        ].into());
+        graph.add_node([
+            ("Is".to_owned(), Attr::Str("Person".to_owned())),
+            ("Name".to_owned(), Attr::Str("Samuel".to_owned()))
+        ].into());
+        graph.add_node([
+            ("Is".to_owned(), Attr::Str("Person".to_owned())),
+            ("Name".to_owned(), Attr::Str("Kåre".to_owned()))
+        ].into());
+
+        graph.add_edge(1, 0, [
+            ("Relationship".to_owned(), Attr::Str("Lives in".to_owned())),
+        ].into());
+        graph.add_edge(2, 0, [
+            ("Relationship".to_owned(), Attr::Str("Lives in".to_owned())),
+        ].into());
+        graph
+    }
+
     fn add_node(&mut self, attrs: Attrs) {
         self.adj.push(Default::default());
         self.nodes.push(attrs);
@@ -48,12 +73,16 @@ impl Graph {
         self.edges.insert((from, to), attrs);
     }
 
-    fn get_node_attrs(&self, ind: usize) -> Option<&Attrs> {
+    pub fn get_node_attrs(&self, ind: usize) -> Option<&Attrs> {
         return self.nodes.get(ind)
     }
 
-    fn get_connections(&self, node_ind: usize) -> Option<&Vec<usize>> {
+    pub fn get_connections(&self, node_ind: usize) -> Option<&Vec<usize>> {
         return self.adj.get(node_ind)
+    }
+
+    pub fn get_nbr_nodes(&self) -> usize {
+        return self.nodes.len()
     }
 }
 
@@ -61,19 +90,4 @@ impl Default for Graph {
     fn default() -> Self {
         Self { nodes: Default::default(), edges: Default::default(), adj: Default::default() }
     }
-}
-
-fn test_graph() -> Graph {
-    let mut graph = Graph::default();
-
-    //Nodes
-    graph.add_node([("hej".to_owned(), Attr::Num(5))].into());
-    graph.add_node([("hejdå".to_owned(), Attr::Pos{x: 5, y:3})].into());
-
-    //Edges
-    graph.add_edge(0, 1, [("kantinf".to_owned(), Attr::Color(2, 3, 4))].into());
-
-
-    graph
-
 }
