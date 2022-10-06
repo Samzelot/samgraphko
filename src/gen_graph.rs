@@ -3,6 +3,14 @@ use std::collections::BTreeMap;
 use std::default::Default;
 use std::collections::HashMap;
 
+pub type Node = usize;
+
+// So far only for nodes, but should add attrs for edges as well
+pub struct TempAttrs<'a, T: 'a>{
+    graph: &'a Graph,
+    attrs: Vec<T>
+}
+
 enum Attr {
     Num(i32),
     Str(String),
@@ -11,22 +19,20 @@ enum Attr {
 }
 
 pub struct Attrs {
-    persistent: BTreeMap<String, Attr>,
-    temp: BTreeMap<String, Attr>
+    persistent: BTreeMap<String, Attr>
 }
 
 impl<const T: usize> From<[(String, Attr); T]> for Attrs {
     fn from(v: [(String, Attr); T]) -> Self {
         Attrs {
-            persistent: v.into(),
-            temp: Default::default()
+            persistent: v.into()
         }
     }
 }
 
 impl Default for Attrs {
     fn default() -> Self {
-        Self { persistent: Default::default(), temp: Default::default() }
+        Self { persistent: Default::default() }
     }
 }
 
@@ -62,6 +68,19 @@ impl Graph {
         graph
     }
 
+    pub fn gen_attrs<'a, T: Default + 'a>(&'a self) -> TempAttrs<'a, T> {
+        let nbr_nodes = self.nodes.len();
+        let mut attrs = Vec::with_capacity(nbr_nodes);
+        for i in 0..nbr_nodes {
+            attrs.push(Default::default());
+        }
+
+        TempAttrs {
+            graph: self,
+            attrs: attrs
+        }
+    }
+
     fn add_node(&mut self, attrs: Attrs) {
         self.adj.push(Default::default());
         self.nodes.push(attrs);
@@ -89,5 +108,15 @@ impl Graph {
 impl Default for Graph {
     fn default() -> Self {
         Self { nodes: Default::default(), edges: Default::default(), adj: Default::default() }
+    }
+}
+
+impl<'a, T> TempAttrs<'a, T> {
+    pub fn borrow_mut(&mut self, node: &Node) -> &mut T {
+        &mut self.attrs[*node]
+    }
+
+    pub fn borrow(&self, node: &Node) -> &T {
+        &self.attrs[*node]
     }
 }
