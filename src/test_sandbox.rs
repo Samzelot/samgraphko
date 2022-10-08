@@ -1,6 +1,6 @@
-use crate::gen_graph::{Graph, TempAttrs};
+use crate::gen_graph::{Graph, temp_attrs::TempAttrs};
 
-// TODO: Set up unit tests
+//TODO: Set up unit tests
 struct TestAttrs {
     num: i32,
     pair: (i32, i32)
@@ -16,7 +16,7 @@ impl Default for TestAttrs {
 }
 
 pub fn test_attrs() {
-    let mut graph = Graph::example();
+    let graph = Graph::example();
     let mut test_attrs: TempAttrs<TestAttrs> = graph.gen_attrs();
 
     let ind = 0;

@@ -8,7 +8,7 @@ fn main() {
     //eframe::start_web("SamGraphKo", options, Box::new(|cc| Box::new(MyApp::new(cc))))
 
     // @TODO Replace this with some real graph?
-    let graph = gen_graph::Graph::default();
+    let graph = gen_graph::Graph::example();
 
     test_sandbox::test_attrs();
 
