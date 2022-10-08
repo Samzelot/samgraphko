@@ -12,8 +12,8 @@ pub type Node = usize;
 
 pub struct Graph {
     nodes: Vec<PermAttrs>,
-    edges: HashMap<(usize, usize), PermAttrs>,
-    adj: Vec<Vec<usize>>
+    edges: HashMap<(Node, Node), PermAttrs>,
+    adj: Vec<Vec<Node>>
 }
 
 impl Graph {
@@ -60,17 +60,17 @@ impl Graph {
         return
     }
 
-    fn add_edge(&mut self, from: usize, to: usize, attrs: PermAttrs) {
+    fn add_edge(&mut self, from: Node, to: Node, attrs: PermAttrs) {
         self.adj[from].push(to);
         self.edges.insert((from, to), attrs);
     }
 
-    pub fn get_node_attrs(&self, ind: usize) -> Option<&PermAttrs> {
-        return self.nodes.get(ind)
+    pub fn get_node_attrs(&self, node: Node) -> Option<&PermAttrs> {
+        return self.nodes.get(node)
     }
 
-    pub fn get_connections(&self, node_ind: usize) -> Option<&Vec<usize>> {
-        return self.adj.get(node_ind)
+    pub fn get_connections(&self, node: Node) -> Option<&Vec<Node>> {
+        return self.adj.get(node)
     }
 
     pub fn get_nbr_nodes(&self) -> usize {
