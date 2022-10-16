@@ -1,13 +1,14 @@
-pub mod temp_attrs;
+pub mod attrs;
 pub mod perm_attrs;
 
 use std::default::Default;
 use std::collections::HashMap;
 
-use self::temp_attrs::TempAttrs;
+use self::attrs::{Attrs, NodeAttrs, EdgeAttrs};
 use self::perm_attrs::{PermAttr, PermAttrs}; 
 
 pub type Node = usize;
+pub type Edge = (Node, Node);   // TODO ?
 
 
 pub struct Graph {
@@ -50,8 +51,16 @@ impl Graph {
         graph
     }
 
-    pub fn gen_attrs<'a, T: Default + 'a>(&'a self) -> TempAttrs<'a, T> {
-        TempAttrs::new(self)
+    pub fn gen_attrs<N: Default, E: Default>(&self) -> Attrs<N, E> {
+        Attrs::new(self)
+    }
+
+    pub fn gen_node_attrs<N: Default>(&self) -> NodeAttrs<N> {
+        NodeAttrs::new(self)
+    }
+
+    pub fn gen_edge_attrs<E: Default>(&self) -> EdgeAttrs<E> {
+        EdgeAttrs::new(self)
     }
 
     fn add_node(&mut self, attrs: PermAttrs) {
@@ -75,5 +84,11 @@ impl Graph {
 
     pub fn get_nbr_nodes(&self) -> usize {
         return self.nodes.len()
+    }
+
+    pub fn get_nbr_undirected_edges(&self) -> usize {
+        // TODO: fix for number directed egdes as well
+        // Now can count duplicate edges
+        return self.edges.len()
     }
 }
