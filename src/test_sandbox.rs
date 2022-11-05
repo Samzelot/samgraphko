@@ -1,4 +1,4 @@
-use crate::gen_graph::{Node, Graph, attrs::NodeAttrs};
+use crate::gen_graph::{Node, Graph, attrs::Attrs};
 
 
 //TODO: Set up unit tests
@@ -18,16 +18,16 @@ impl Default for TestNodeAttrs {
 
 pub fn test_attrs() {
     let graph = Graph::example();
-    let mut test_attrs: NodeAttrs<TestNodeAttrs> = graph.gen_node_attrs();
+    let mut test_attrs: Attrs<TestNodeAttrs, TestNodeAttrs> = graph.gen_attrs();
 
     let usize_var: usize = 5;
     let _node: Node = usize_var;
 
     let ind = 0;
-    test_attrs.get_mut(&ind).num = 37;
-    test_attrs.get_mut(&ind).pair = (-2, 42);
+    test_attrs.get_mut_node(&ind).num = 37;
+    test_attrs.get_mut_node(&ind).pair = (-2, 42);
 
     println!("Cheap man's assert(37 = {} && (-2, 42) == {:?})", 
-        test_attrs.get(&ind).num, test_attrs.get(&ind).pair);
+        test_attrs.get_node(&ind).num, test_attrs.get_node(&ind).pair);
     
 }

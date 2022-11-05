@@ -12,7 +12,6 @@ pub struct PermAttrs {
     attrs: BTreeMap<String, PermAttr>
 }
 
-// Why use T if not generic?
 impl<const T: usize> From<[(String, PermAttr); T]> for PermAttrs {
     fn from(v: [(String, PermAttr); T]) -> Self {
         PermAttrs {

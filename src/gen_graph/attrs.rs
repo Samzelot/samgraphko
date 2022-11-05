@@ -1,22 +1,14 @@
-use std::collections::HashMap;
-
 use super::{Graph, Node, Edge};
 
 // TODO how should lifetimes be? On E and N, or on vec?
 pub struct Attrs<N, E> {
-    node_attrs: NodeAttrs<N>,
-    edge_attrs: EdgeAttrs<E>
+    node_attrs: VecAttrs<N>,
+    edge_attrs: VecAttrs<E>
 }
 
-pub struct NodeAttrs<N> {
+pub struct VecAttrs<N> {
     attrs: Vec<N>
 }
-
-pub struct EdgeAttrs<E> {
-    attrs: Vec<E>,
-    map: HashMap<(Node, Node), usize>   // TODO: lifetime
-}
-
 
 impl<'a, N: Default, E: Default> Attrs<N, E> {
 
@@ -38,36 +30,34 @@ impl<'a, N: Default, E: Default> Attrs<N, E> {
 
     pub fn new(graph: &'a Graph) -> Attrs<N, E> {
             Attrs {
-                node_attrs: NodeAttrs::new(graph),
-                edge_attrs: EdgeAttrs::new(graph)
+                node_attrs: VecAttrs::new(graph.nbr_nodes()),
+                edge_attrs: VecAttrs::new(graph.nbr_edges()),
             }
     }
 }
 
 
-impl<'a, N: Default> NodeAttrs<N> {
-    pub fn get_mut(&mut self, node: &Node) -> &mut N {
-        &mut self.attrs[*node]
+impl<'a, N: Default> VecAttrs<N> {
+    pub fn get_mut(&mut self, ind: &usize) -> &mut N {
+        &mut self.attrs[*ind]
     }
 
-    pub fn get(&self, node: &Node) -> &N {
-        &self.attrs[*node]
+    pub fn get(&self, ind: &usize) -> &N {
+        &self.attrs[*ind]
     }
 
-    pub fn new(graph: &'a Graph) -> NodeAttrs<N> {
-        let nbr_nodes = graph.get_nbr_nodes();
-        let mut attrs = Vec::with_capacity(nbr_nodes);
-        for _ in 0..nbr_nodes {
-            attrs.push(Default::default());
-        }
+    pub fn new(nbr_attrs: usize) -> VecAttrs<N> {
+        let attrs = (0..nbr_attrs)
+            .map(|_| Default::default())
+            .collect();
 
-        NodeAttrs {
+        Self {
             attrs
         }
     }
 }
 
-
+/*
 impl<'a, E: Default> EdgeAttrs<E> {
     pub fn get_mut(&mut self, edge: &Edge) -> &mut E {
         // TODO This does not work for undirected edges
@@ -103,4 +93,4 @@ impl<'a, E: Default> EdgeAttrs<E> {
         }
     }
 }
-
+*/
