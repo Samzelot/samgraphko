@@ -12,6 +12,7 @@ publish = false
 [dependencies]
 egui = "0.19.0"
 eframe = { version = "0.19.0", features = ["persistence"] }
+nalgebra = "0.31.3"
 
 # From eframe_template:
 # web:
